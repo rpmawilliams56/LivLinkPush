@@ -6,11 +6,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // Import routes
-const savedigitalpurchaseRoute = require('./routes/api/savedigitalpurchase');
 const optinRoute = require('./routes/api/optin');
 const signupRoute = require('./routes/api/signup');
 const claimRoute = require('./routes/api/claim');
-const savepurchaseRoute = require('./routes/api/savepurchase');
+
+// Import model
+const { purchase } = require('./models/purchase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,11 +26,9 @@ app.get('/', (req, res) => {
 });
 
 // Routes
-app.use('/api/savedigitalpurchase', savedigitalpurchaseRoute);
 app.use('/api/optin', optinRoute);
 app.use('/api/signup', signupRoute);
 app.use('/api/claim', claimRoute);
-app.use('/api/savepurchase', savepurchaseRoute);
 
 // MongoDB + Server init
 mongoose.connect(process.env.MONGO_URI)
