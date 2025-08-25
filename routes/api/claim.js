@@ -1,3 +1,18 @@
+
+const fs = require('fs');
+const path = require('path');
+
+console.log("Listing files at ../../ from claim.js:");
+
+const dirPath = path.resolve(__dirname, '../../');
+try {
+  const files = fs.readdirSync(dirPath);
+  console.log(files);
+} catch (err) {
+  console.error("Error reading directory:", err);
+}
+
+
 const express = require('express');
 const router = express.Router();
 const Purchase = require('../../models/purchase');
