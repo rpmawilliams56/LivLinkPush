@@ -1,0 +1,30 @@
+{
+  "name": "llnk-token-sender",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "ethers": "^5.7.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "description": "API for LLNK token sender",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpmawilliams56/LLNK-Token-Sender.git"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rpmawilliams56/LLNK-Token-Sender/issues"
+  },
+  "homepage": "https://github.com/rpmawilliams56/LLNK-Token-Sender#readme"
+}
