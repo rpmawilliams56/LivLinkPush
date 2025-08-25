@@ -21,8 +21,8 @@ async function savepurchase(purchaseData) {
     return 'purchase with this txn_id already exists.';
   }
 
-  const purchase = new purchase(purchaseData);
-  await purchase.save();
+  const newPurchase = new purchase(purchaseData);
+await newPurchase.save();
 
   return 'purchase saved successfully.';
 }

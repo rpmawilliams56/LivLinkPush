@@ -1,5 +1,3 @@
-
-
 require('dotenv').config();
 console.log("✅ MONGO_URI loaded as:", process.env.MONGO_URI);
 
@@ -14,8 +12,8 @@ const signupRoute = require('./routes/api/signup');
 const claimRoute = require('./routes/api/claim');
 const savepurchaseRoute = require('./routes/api/savepurchase');
 
-// Import model for supporters endpoint
-const purchase = require('./models/purchase');
+// Import model
+const { purchase } = require('./models/purchase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,14 +27,14 @@ app.get('/', (req, res) => {
   res.send('Live Link API is running');
 });
 
-// Mount routes
+// Routes
 app.use('/api/savedigitalpurchase', savedigitalpurchaseRoute);
 app.use('/api/optin', optinRoute);
 app.use('/api/signup', signupRoute);
 app.use('/api/claim', claimRoute);
 app.use('/api/savepurchase', savepurchaseRoute);
 
-// Supporters wall endpoint
+// Supporters endpoint
 app.get('/supporters', async (req, res) => {
   try {
     const purchases = await purchase.find({ payer_name: { $ne: null } })
@@ -63,12 +61,12 @@ app.get('/supporters', async (req, res) => {
   }
 });
 
-// Connect to MongoDB and start server
+// MongoDB + Server init
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ Connected to MongoDB");
     app.listen(PORT, () => {
-      console.log(`🌐 Server running on port ${PORT}`);
+      console.log(`🌐 Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
     });
   })
   .catch(err => {
