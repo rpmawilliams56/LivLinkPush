@@ -1,47 +1,19 @@
-// routes/signup.js or routes/api/signup.js (depending on your structure)
+const mongoose = require('mongoose');
 
-const express = require("express");
-const router = express.Router();
-const SignupEntry = require("../../models/signupentry"); // Adjust path if needed
+const signupSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, required: true },
+  phone: String,
+  message: String,
 
-// POST /api/signup
-router.post("/", async (req, res) => {
-  try {
-    const {
-      email,
-      name,
-      phone,
-      message,
-      formId,
-      tags = [],
-      sourcePage = "",
-      metadata = {}
-    } = req.body;
+  consentEmail: { type: Boolean, default: false },  // from original signup
+  consentSMS: { type: Boolean, default: false },    // from original signup
 
-    // Required field check
-    if (!email || !formId) {
-      return res.status(400).json({ error: "Email and formId are required." });
-    }
+  formId: { type: String, required: true },        // identifies form source
+  tags: [String],
+  sourcePage: String,
+  metadata: Object,
+  
+}, { timestamps: true });
 
-    const entry = new signupentry({
-      email,
-      name,
-      phone,
-      message,
-      formId,
-      tags,
-      sourcePage,
-      metadata
-    });
-
-    await entry.save();
-    console.log("✅ New signup saved:", email);
-
-    res.status(201).json({ message: "signup saved successfully." });
-  } catch (err) {
-    console.error("❌ Error saving signup entry:", err);
-    res.status(500).json({ error: "failed to save entry." });
-  }
-});
-
-module.exports = router;
+module.exports = mongoose.model('Signup', signupSchema);

@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 
 const signupSchema = new mongoose.Schema({
   email: { type: String, required: true },
-  phone: { type: String },
+  phone: String,
   consentEmail: { type: Boolean, default: false },
   consentSMS: { type: Boolean, default: false },
-  date: { type: Date, default: Date.now }
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model('signup', signupSchema);
+module.exports = mongoose.model('Signup', signupSchema);
