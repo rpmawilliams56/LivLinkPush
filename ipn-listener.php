@@ -98,7 +98,7 @@ if (strcmp($response, "VERIFIED") == 0) {
         'currency' => $payment_currency
     ]);
 
-    $nodeApiUrl = 'https://llnk-token-sender-5.onrender.com/api/savePurchase'; // <-- Update with your real Node API URL
+    $nodeApiUrl = 'https://llnk-token-sender-6.onrender.com'; // <-- Update with your real Node API URL
 
     $ch = curl_init($nodeApiUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
