@@ -1,4 +1,4 @@
-// sendToken.js
+// sendtoken.js
 require('dotenv').config();
 const { ethers } = require('ethers');
 
