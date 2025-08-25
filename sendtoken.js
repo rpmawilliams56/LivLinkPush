@@ -9,6 +9,11 @@ const wallet = new ethers.Wallet(privateKey, provider);
 const tokenContractAddress = process.env.TOKEN_CONTRACT;
 const tokenDecimals = 18;
 
+if (!privateKey) {
+  throw new Error("PRIVATE_KEY is not defined in environment variables.");
+}
+
+
 // Minimal ERC-20 ABI (just transfer)
 const abi = [
   "function transfer(address to, uint amount) public returns (bool)"
