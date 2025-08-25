@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Purchase = require('../../models/purchase');
-const { sendToken } = require('../../sendToken'); // Adjust path if needed
+const { sendToken } = require('../../sendtoken'); // Adjust path if needed
 
 // POST /api/claim
 router.post('/', async (req, res) => {
