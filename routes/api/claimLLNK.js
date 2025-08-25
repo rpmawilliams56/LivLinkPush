@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Purchase = require('../../models/Purchase');
+const Purchase = require('../../models/purchase');
 const { sendToken } = require('../../sendToken'); // Adjust path if needed
 
 // POST /api/claim
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 
   try {
     // Find the purchase by transaction ID
-    const purchase = await Purchase.findOne({ txn_id });
+    const purchase = awaitpurchase.findOne({ txn_id });
 
     if (!purchase) {
       return res.status(404).json({ error: 'Transaction not found' });

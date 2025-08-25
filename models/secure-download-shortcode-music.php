@@ -23,7 +23,7 @@ function sds_secure_download_shortcode($atts) {
         return "<p><strong>Error:</strong> Missing purchase verification details.</p>";
     }
 
-    // Check if purchases file exists and readable
+    // Check if purchase file exists and readable
     if (!file_exists($atts['purchases_file'])) {
         return "<p><strong>Error:</strong> Purchase data file not found.</p>";
     }

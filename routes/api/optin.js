@@ -1,7 +1,7 @@
 // routes/api/optin.js
 const express = require('express');
 const router = express.Router();
-const OptIn = require('../../models/OptIn');
+const Optin = require('../../models/optin');
 
 // POST /api/optin
 router.post('/', async (req, res) => {
@@ -11,9 +11,9 @@ router.post('/', async (req, res) => {
       lastName,
       phoneOrSMS,
       email,
-      optInSmsAndEmail,
-      optInLateNightNotifications,
-      optInEmailOnly,
+      optinSmsAndEmail,
+      optinLateNightNotifications,
+      optinEmailOnly,
       bandInterestedInTestingLLNK
     } = req.body;
 
@@ -22,20 +22,20 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: firstName, lastName, phoneOrSMS, or email.' });
     }
 
-    const newOptIn = new OptIn({
+    const newoptin = new optin({
       firstName,
       lastName,
       phoneOrSMS,
       email,
-      optInSmsAndEmail: Boolean(optInSmsAndEmail),
-      optInLateNightNotifications: Boolean(optInLateNightNotifications),
-      optInEmailOnly: Boolean(optInEmailOnly),
+      optinSmsAndEmail: Boolean(optinSmsAndEmail),
+      optinLateNightNotifications: Boolean(optinLateNightNotifications),
+      optinEmailOnly: Boolean(optinEmailOnly),
       bandInterestedInTestingLLNK: Boolean(bandInterestedInTestingLLNK)
     });
 
-    await newOptIn.save();
+    await newoptin.save();
 
-    return res.status(201).json({ message: 'Opt-in saved successfully.' });
+    return res.status(201).json({ message: 'opt-in saved successfully.' });
   } catch (error) {
     console.error('❌ Error saving opt-in:', error);
     return res.status(500).json({ error: 'Server error.' });

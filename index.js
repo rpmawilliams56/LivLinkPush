@@ -1,10 +1,6 @@
 
 
 require('dotenv').config();
-
-const fs = require('fs');
-console.log("Files in routes/api:", fs.readdirSync('./routes/api'));
-
 console.log("✅ MONGO_URI loaded as:", process.env.MONGO_URI);
 
 const express = require('express');
@@ -12,14 +8,14 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // Import routes
-const saveDigitalPurchaseRoute = require('./routes/api/saveDigitalPurchase');
+const savedigitalpurchaseRoute = require('./routes/api/savedigitalpurchase');
 const optinRoute = require('./routes/api/optin');
 const signupRoute = require('./routes/api/signup');
 const claimRoute = require('./routes/api/claim');
-const savePurchaseRoute = require('./routes/api/savePurchase');
+const savepurchaseRoute = require('./routes/api/savepurchase');
 
 // Import model for supporters endpoint
-const Purchase = require('./models/Purchase');
+const purchase = require('./models/purchase');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,16 +30,16 @@ app.get('/', (req, res) => {
 });
 
 // Mount routes
-app.use('/api/saveDigitalPurchase', saveDigitalPurchaseRoute);
+app.use('/api/savedigitalpurchase', savedigitalpurchaseRoute);
 app.use('/api/optin', optinRoute);
 app.use('/api/signup', signupRoute);
 app.use('/api/claim', claimRoute);
-app.use('/api/savePurchase', savePurchaseRoute);
+app.use('/api/savepurchase', savepurchaseRoute);
 
 // Supporters wall endpoint
 app.get('/supporters', async (req, res) => {
   try {
-    const purchases = await Purchase.find({ payer_name: { $ne: null } })
+    const purchases = await purchase.find({ payer_name: { $ne: null } })
       .sort({ createdAt: -1 })
       .limit(200)
       .lean();

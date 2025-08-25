@@ -2,7 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
-const SignupEntry = require("../../models/SignupEntry"); // Adjust path if needed
+const SignupEntry = require("../../models/signupentry"); // Adjust path if needed
 
 // POST /api/signup
 router.post("/", async (req, res) => {
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Email and formId are required." });
     }
 
-    const entry = new SignupEntry({
+    const entry = new signupentry({
       email,
       name,
       phone,
@@ -37,10 +37,10 @@ router.post("/", async (req, res) => {
     await entry.save();
     console.log("✅ New signup saved:", email);
 
-    res.status(201).json({ message: "Signup saved successfully." });
+    res.status(201).json({ message: "signup saved successfully." });
   } catch (err) {
     console.error("❌ Error saving signup entry:", err);
-    res.status(500).json({ error: "Failed to save entry." });
+    res.status(500).json({ error: "failed to save entry." });
   }
 });
 

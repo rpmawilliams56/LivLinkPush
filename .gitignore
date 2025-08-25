@@ -13,6 +13,3 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Optional: Ignore build folders or other temporary files
-dist/
-build/

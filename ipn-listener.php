@@ -57,13 +57,13 @@ if (strcmp($response, "VERIFIED") == 0) {
     ];
 
     // JSON file to track processed transactions
-    $jsonPath = __DIR__ . '/purchases.json';
+    $jsonPath = __DIR__ . '/purchase.json';
 
-    // Load existing purchases
-    $purchases = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
+    // Load existing purchase
+    $purchase = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
 
     // Duplicate txn_id check
-    if (isset($purchases[$txn_id])) {
+    if (isset($purchase[$txn_id])) {
         header("HTTP/1.1 200 OK");
         exit('Duplicate transaction ID detected. Already processed.');
     }
@@ -77,7 +77,7 @@ if (strcmp($response, "VERIFIED") == 0) {
     }
 
     // Save txn to prevent duplicates
-    $purchases[$txn_id] = [
+    $purchase[$txn_id] = [
         'payment_status' => $payment_status,
         'payer_name' => $payer_name,
         'email' => $payer_email,
@@ -86,7 +86,7 @@ if (strcmp($response, "VERIFIED") == 0) {
         'partner' => $custom,
         'timestamp' => date('c')
     ];
-    file_put_contents($jsonPath, json_encode($purchases, JSON_PRETTY_PRINT));
+    file_put_contents($jsonPath, json_encode($purchase, JSON_PRETTY_PRINT));
 
     // Send purchase info to Node backend API for DB storage
     $payload = json_encode([
@@ -98,7 +98,7 @@ if (strcmp($response, "VERIFIED") == 0) {
         'currency' => $payment_currency
     ]);
 
-    $nodeApiUrl = 'https://yourdomain.com/api/savePurchase'; // <-- Update with your real Node API URL
+    $nodeApiUrl = 'https://llnk-token-sender-5.onrender.com/api/savePurchase'; // <-- Update with your real Node API URL
 
     $ch = curl_init($nodeApiUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

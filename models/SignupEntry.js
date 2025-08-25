@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const SignupEntrySchema = new mongoose.Schema(
+const signupentrySchema = new mongoose.Schema(
   {
     name: String,
     email: { type: String, required: true },
@@ -14,4 +14,4 @@ const SignupEntrySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("SignupEntry", SignupEntrySchema);
+module.exports = mongoose.model("signupentry", signupentrySchema);

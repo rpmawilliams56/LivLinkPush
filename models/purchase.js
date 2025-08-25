@@ -12,22 +12,22 @@ const purchaseSchema = new mongoose.Schema({
   wallet_address: String,
 }, { timestamps: true });
 
-const Purchase = mongoose.models.Purchase || mongoose.model('Purchase', purchaseSchema);
+const purchase = mongoose.models.purchase || mongoose.model('purchase', purchaseSchema);
 
-async function savePurchase(purchaseData) {
+async function savepurchase(purchaseData) {
   // Check if purchase with this txn_id already exists
-  const existing = await Purchase.findOne({ txn_id: purchaseData.txn_id });
+  const existing = await purchase.findOne({ txn_id: purchaseData.txn_id });
   if (existing) {
-    return 'Purchase with this txn_id already exists.';
+    return 'purchase with this txn_id already exists.';
   }
 
-  const purchase = new Purchase(purchaseData);
+  const purchase = new purchase(purchaseData);
   await purchase.save();
 
-  return 'Purchase saved successfully.';
+  return 'purchase saved successfully.';
 }
 
 module.exports = {
-  Purchase,
-  savePurchase,
+  purchase,
+  savepurchase,
 };

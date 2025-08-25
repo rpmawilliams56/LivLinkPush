@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const result = await savePurchase({
+    const result = await savepurchase({
       txn_id,
       email,
       payer_name,

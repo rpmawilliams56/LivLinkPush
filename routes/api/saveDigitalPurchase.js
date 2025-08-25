@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Purchase = require('../../models/purchase'); // Import model
+const purchase = require('../../models/purchase'); // Import model
 
-// POST /api/saveDigitalPurchase
+// POST /api/savedigitalpurchase
 router.post('/', async (req, res) => {
   const { txn_id, email, payer_name, item_name, amount, currency, partner } = req.body;
 
@@ -13,13 +13,13 @@ router.post('/', async (req, res) => {
 
   try {
     // Check if purchase with txn_id already exists
-    const existing = await Purchase.findOne({ txn_id });
+    const existing = await purchase.findOne({ txn_id });
     if (existing) {
       return res.status(200).json({ message: 'Purchase already exists.' });
     }
 
-    // Create new Purchase document
-    const newPurchase = new Purchase({
+    // Create new purchase document
+    const newpurchase = new purchase({
       txn_id,
       email,
       payer_name,
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
       currency
     });
 
-    await newPurchase.save();
+    await newpurchase.save();
 
     res.status(201).json({ message: 'Digital purchase saved successfully.' });
   } catch (err) {
