@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Claim LLNK Token</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .donation-box {
+      border: 2px solid #ffffff;
+      background-color: #111111;
+      padding: 30px;
+      margin: 40px auto;
+      max-width: 700px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    .donation-box h2 {
+      color: #ffffff;
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+
+    .donation-box p {
+      font-size: 18px;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .donation-link {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #0070ba;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 18px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .donation-link:hover {
+      background-color: #005a94;
+    }
+
+    form {
+      margin-top: 30px;
+    }
+
+    input {
+      padding: 10px;
+      width: 90%;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="donation-box">
+    <h2>Claim Your LLNK Token</h2>
+    <p>Enter your PayPal Transaction ID and Wallet Address to claim your LLNK.</p>
+
+    <form id="claimForm">
+      <input type="text" id="txn_id" placeholder="PayPal Transaction ID" required />
+      <input type="text" id="wallet_address" placeholder="Wallet Address" required />
+      <button type="submit">Claim Token</button>
+    </form>
+
+    <p id="result"></p>
+    
+    <hr style="margin: 40px 0; border-color: #333" />
+    
+    <p>
+      Every donation helps us build something meaningful for everyone. Thank you.
+    </p>
+    <a
+      class="donation-link"
+      href="https://www.paypal.com/ncp/payment/9AWWZJDMCSBGS?custom=link1"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      💙 Donate via PayPal
+    </a>
+  </div>
+
+  <script>
+    document.getElementById("claimForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const txn_id = document.getElementById("txn_id").value.trim();
+      const wallet_address = document.getElementById("wallet_address").value.trim();
+      const result = document.getElementById("result");
+
+      if (!txn_id || !wallet_address) {
+        result.innerText = "❌ Please enter both Transaction ID and Wallet Address.";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://llnk-token-sender-6.onrender.com/api/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ txn_id, wallet_address })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          result.innerHTML = `✅ Token sent!<br>Tx Hash: <a href="https://amoy.polygonscan.com/tx/${data.txHash}" target="_blank">${data.txHash}</a>`;
+        } else {
+          result.innerHTML = `❌ ${data.error || 'An error occurred.'}`;
+        }
+      } catch (err) {
+        console.error(err);
+        result.innerText = "❌ Network error. Please try again later.";
+      }
+    });
+  </script>
+</body>
+</html>

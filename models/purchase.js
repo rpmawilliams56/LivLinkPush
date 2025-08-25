@@ -7,27 +7,29 @@ const purchaseSchema = new mongoose.Schema({
   partner: String,
   item_name: String,
   amount: Number,
-  currency: String,
+  currency: { type: String, default: 'USD' },
+  status: String, // Optional: Completed, Pending, etc.
   claimed: { type: Boolean, default: false },
   wallet_address: String,
+  is_digital: { type: Boolean, default: false }, // Distinguish digital purchases
+  download_link: String, // Optionally populated for digital purchases
 }, { timestamps: true });
 
-const purchase = mongoose.models.purchase || mongoose.model('purchase', purchaseSchema);
+const Purchase = mongoose.models.Purchase || mongoose.model('Purchase', purchaseSchema);
 
-async function savepurchase(purchaseData) {
-  // Check if purchase with this txn_id already exists
-  const existing = await purchase.findOne({ txn_id: purchaseData.txn_id });
+async function savePurchase(purchaseData) {
+  const existing = await Purchase.findOne({ txn_id: purchaseData.txn_id });
   if (existing) {
-    return 'purchase with this txn_id already exists.';
+    return 'Purchase with this txn_id already exists.';
   }
 
-  const newPurchase = new purchase(purchaseData);
-await newPurchase.save();
+  const newPurchase = new Purchase(purchaseData);
+  await newPurchase.save();
 
-  return 'purchase saved successfully.';
+  return 'Purchase saved successfully.';
 }
 
 module.exports = {
-  purchase,
-  savepurchase,
+  Purchase,
+  savePurchase
 };

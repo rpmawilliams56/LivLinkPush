@@ -33,9 +33,9 @@ if (curl_errno($ch)) {
 curl_close($ch);
 
 // 4. Process verified IPN
-if (strcmp($response, "VERIFIED") == 0) {
+if (strcmp($response, "VERIFIED") === 0) {
 
-    // Extract IPN variables safely
+    // Extract IPN variables
     $first_name       = $_POST['first_name'] ?? 'N/A';
     $last_name        = $_POST['last_name'] ?? '';
     $payer_email      = $_POST['payer_email'] ?? 'N/A';
@@ -49,56 +49,55 @@ if (strcmp($response, "VERIFIED") == 0) {
 
     $payer_name = trim("$first_name $last_name");
 
-    // Partners list — add/remove partners here
+    // Define partner list
     $partners = [
         'john' => 'john@example.com',
         'sara' => 'sara@example.com',
-        // more partners...
+        // Add more partners as needed
     ];
 
-    // JSON file to track processed transactions
-    $jsonPath = __DIR__ . '/purchase.json';
-
-    // Load existing purchase
-    $purchase = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
-
-    // Duplicate txn_id check
-    if (isset($purchase[$txn_id])) {
-        header("HTTP/1.1 200 OK");
-        exit('Duplicate transaction ID detected. Already processed.');
-    }
-
-    // Validate partner key
+    // Optional: Validate partner key
     if (!isset($partners[$custom])) {
-        // Alert invalid partner
         mail('you@example.com', '❌ Invalid Partner in PayPal IPN', "Transaction ID: $txn_id\nPartner key: $custom");
         header("HTTP/1.1 200 OK");
         exit('Invalid partner key.');
     }
 
-    // Save txn to prevent duplicates
+    // Prevent duplicate txn using local file
+    $jsonPath = __DIR__ . '/purchase.json';
+    $purchase = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
+
+    if (isset($purchase[$txn_id])) {
+        header("HTTP/1.1 200 OK");
+        exit('Duplicate transaction ID detected. Already processed.');
+    }
+
+    // Save to local JSON to track processed txn
     $purchase[$txn_id] = [
         'payment_status' => $payment_status,
-        'payer_name' => $payer_name,
-        'email' => $payer_email,
-        'amount' => $payment_amount,
-        'currency' => $payment_currency,
-        'partner' => $custom,
-        'timestamp' => date('c')
+        'payer_name'     => $payer_name,
+        'email'          => $payer_email,
+        'amount'         => $payment_amount,
+        'currency'       => $payment_currency,
+        'partner'        => $custom,
+        'timestamp'      => date('c')
     ];
     file_put_contents($jsonPath, json_encode($purchase, JSON_PRETTY_PRINT));
 
-    // Send purchase info to Node backend API for DB storage
+    // Send to Node.js backend
     $payload = json_encode([
-        'txn_id' => $txn_id,
-        'email' => $payer_email,
-        'payer_name' => $payer_name,
-        'partner' => $custom,
-        'amount' => floatval($payment_amount),
-        'currency' => $payment_currency
+        'txn_id'         => $txn_id,
+        'email'          => $payer_email,
+        'payer_name'     => $payer_name,
+        'partner'        => $custom,
+        'item_name'      => $item_name,
+        'amount'         => floatval($payment_amount),
+        'currency'       => $payment_currency,
+        'status'         => $payment_status,
+        'is_digital'     => false // You can dynamically detect or flag later
     ]);
 
-    $nodeApiUrl = 'https://llnk-token-sender-6.onrender.com'; // <-- Update with your real Node API URL
+    $nodeApiUrl = 'https://llnk-token-sender-6.onrender.com/api/savepurchase';
 
     $ch = curl_init($nodeApiUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -111,13 +110,12 @@ if (strcmp($response, "VERIFIED") == 0) {
     if (curl_errno($ch)) {
         error_log('Error sending purchase to Node API: ' . curl_error($ch));
     } else {
-        error_log("Node API response: " . $nodeResponse);
+        error_log("✅ Node API response: " . $nodeResponse);
     }
     curl_close($ch);
 
-    // Placeholder for payout processing
+    // Example: Payout logic placeholder
     function processPayouts($txn_id, $partners, $custom, $payment_amount) {
-        // Example payout logic (customize as needed)
         $payoutPercentage = 0.8;
         $payoutAmount = $payment_amount * $payoutPercentage;
         $partnerEmail = $partners[$custom] ?? null;
@@ -127,19 +125,16 @@ if (strcmp($response, "VERIFIED") == 0) {
             return;
         }
 
-        // TODO: Implement PayPal Payout API here
-
+        // TODO: Real payout logic here
         error_log("Payout placeholder: Would send $payoutAmount USD to $partnerEmail for txn $txn_id");
     }
 
     processPayouts($txn_id, $partners, $custom, floatval($payment_amount));
 
-    // Send 200 OK to PayPal
     header("HTTP/1.1 200 OK");
     exit('IPN processed successfully.');
 
 } else {
-    // IPN validation failed
     header("HTTP/1.1 400 Bad Request");
     exit('IPN validation failed.');
 }

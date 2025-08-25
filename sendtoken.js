@@ -1,46 +1,41 @@
-// sendtoken.js
 require('dotenv').config();
 const { ethers } = require('ethers');
+const abi = require('./abi.json'); // Make sure ABI is accurate
 
-// ============ ⚙️ CONFIG ============
-const provider = new ethers.providers.JsonRpcProvider(process.env.AMOY_RPC); // Your RPC URL
-const privateKey = process.env.PRIVATE_KEY;
-const wallet = new ethers.Wallet(privateKey, provider);
-const tokenContractAddress = process.env.TOKEN_CONTRACT;
-const tokenDecimals = 18;
+const TOKEN_CONTRACT = process.env.TOKEN_CONTRACT;
+const AMOY_RPC = process.env.AMOY_RPC;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
-if (!privateKey) {
-  throw new Error("PRIVATE_KEY is not defined in environment variables.");
+if (!TOKEN_CONTRACT || !AMOY_RPC || !PRIVATE_KEY) {
+  throw new Error("❌ Missing environment variables (TOKEN_CONTRACT, AMOY_RPC, PRIVATE_KEY)");
 }
 
+const provider = new ethers.JsonRpcProvider(AMOY_RPC);
+const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+const contract = new ethers.Contract(TOKEN_CONTRACT, abi, wallet);
 
-// Minimal ERC-20 ABI (just transfer)
-const abi = [
-  "function transfer(address to, uint amount) public returns (bool)"
-];
-
-const contract = new ethers.Contract(tokenContractAddress, abi, wallet);
-
-// ============ 🚀 FUNCTION ============
-async function sendToken(toAddress, amount) {
+/**
+ * Sends tokens to a wallet address.
+ * @param {string} to - Recipient wallet address.
+ * @param {number|string} amount - Amount of tokens to send (in human-readable units).
+ * @returns {Promise<{ success: boolean, hash?: string, error?: string }>}
+ */
+async function sendToken(to, amount) {
   try {
-    const formattedAmount = ethers.utils.parseUnits(amount.toString(), tokenDecimals);
-    console.log(`Sending ${amount} LLNK to ${toAddress}...`);
-    const tx = await contract.transfer(toAddress, formattedAmount);
-    console.log("Tx sent. Waiting for confirmation...");
-    const receipt = await tx.wait();
-    console.log("✅ Confirmed:", receipt.transactionHash);
-    return {
-      success: true,
-      hash: receipt.transactionHash
-    };
+    const decimals = await contract.decimals(); // Dynamically fetch token decimals
+    const value = ethers.parseUnits(amount.toString(), decimals);
+
+    const tx = await contract.transfer(to, value);
+    console.log("📤 Transaction hash:", tx.hash);
+    await tx.wait();
+    console.log("✅ Tokens transferred successfully.");
+
+    return { success: true, hash: tx.hash };
   } catch (err) {
-    console.error("❌ Token send error:", err);
-    return {
-      success: false,
-      error: err.message
-    };
+    console.error("❌ Transfer failed:", err);
+    return { success: false, error: err.message || 'Unknown error' };
   }
 }
 
 module.exports = { sendToken };
+

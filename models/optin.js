@@ -1,4 +1,3 @@
-// models/optin.js
 const mongoose = require('mongoose');
 
 const optinSchema = new mongoose.Schema({
@@ -7,11 +6,10 @@ const optinSchema = new mongoose.Schema({
   phoneOrSMS: { type: String, required: true },
   email: { type: String, required: true },
 
-  optinSmsAndEmail: { type: Boolean, default: false },       // Checkbox 1
-  optinLateNightNotifications: { type: Boolean, default: false }, // Checkbox 2
-  optinEmailOnly: { type: Boolean, default: false },          // Checkbox 3
-  bandInterestedInTestingLLNK: { type: Boolean, default: false }  // Checkbox 4
-
+  optinSmsAndEmail: { type: Boolean, default: false },
+  optinLateNightNotifications: { type: Boolean, default: false },
+  optinEmailOnly: { type: Boolean, default: false },
+  bandInterestedInTestingLLNK: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = mongoose.model('optin', optinSchema);
+module.exports = mongoose.model('Optin', optinSchema);
