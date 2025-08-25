@@ -1,4 +1,7 @@
+
+
 require('dotenv').config();
+
 const fs = require('fs');
 console.log("Files in routes/api:", fs.readdirSync('./routes/api'));
 
