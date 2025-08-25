@@ -13,7 +13,7 @@
     "mongoose": "^8.18.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": "18.x"
   },
   "description": "API for LLNK token sender",
   "repository": {
