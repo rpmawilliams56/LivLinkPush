@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const optinRoute = require('./routes/api/optin');
 const signupRoute = require('./routes/api/signup');
 const claimRoute = require('./routes/api/claim');
+const saveDigitalDownloadRoute = require('./routes/api/savedigitaldownload'); // ⬅️ NEW LINE
 
 // Import model
 const { purchase } = require('./models/purchase');
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.use('/api/optin', optinRoute);
 app.use('/api/signup', signupRoute);
 app.use('/api/claim', claimRoute);
+app.use('/api/savedigitaldownload', saveDigitalDownloadRoute); // ⬅️ NEW LINE
 
 // MongoDB + Server init
 mongoose.connect(process.env.MONGO_URI)
