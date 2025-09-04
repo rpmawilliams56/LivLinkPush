@@ -19,6 +19,10 @@ router.post('/', async (req, res) => {
   } = req.body;
 
   try {
+    // Normalize email and item name to lowercase first
+    const normalizedEmail = email.toLowerCase();
+    const normalizedItemName = item_name.toLowerCase();
+
     // Save to MongoDB
     const existing = await DigitalDownload.findOne({ transactionId: txn_id });
     if (existing) {
@@ -27,10 +31,10 @@ router.post('/', async (req, res) => {
 
     const purchase = new DigitalDownload({
       transactionId: txn_id,
-      payerEmail: email,
+      payerEmail: normalizedEmail,
       payerName: payer_name,
       partner,
-      itemName: item_name,
+      itemName: normalizedItemName,
       amount,
       currency,
       status
@@ -51,8 +55,8 @@ router.post('/', async (req, res) => {
 
     if (!purchases[txn_id]) {
       purchases[txn_id] = {
-        email: email.toLowerCase(),
-        item_name: item_name.toLowerCase(),
+        email: normalizedEmail,
+        item_name: normalizedItemName,
         payer_name,
         amount,
         currency,

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LiveLink Push Setup</title>
+</head>
+<body>
+  <h2>Subscribe to Live Show Offers</h2>
+  <button id="subscribeBtn">Subscribe to Push</button>
+
+  <script>
+    const publicVapidKey = 'BBGVHJs-mb2ViYImvEMEpsdK41RJSLq5PVBFdV9gWWfdllXg0h7aOk_SCkhQYfjJ-B9O4iPKiZWgx06nA-bevNw';
+
+    // Convert base64 public key to Uint8Array
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    async function subscribeToPush() {
+      // Check if service workers and push are supported
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        try {
+          const registration = await navigator.serviceWorker.register('/sw.js');
+          console.log('Service Worker registered:', registration);
+
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+          });
+
+          console.log('Push Subscription:', subscription);
+
+          // Customize these values
+          const payload = {
+            ...subscription.toJSON(),
+            bandId: 'band123',
+            showId: 'show456',
+            email: 'user@example.com',     // optional
+            phone: '555-555-5555',         // optional
+            optedIn: true
+          };
+
+          const response = await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+          alert(result.message || 'Subscribed successfully!');
+        } catch (err) {
+          console.error('Error subscribing to push:', err);
+          alert('Push subscription failed.');
+        }
+      } else {
+        alert('Push notifications are not supported in this browser.');
+      }
+    }
+
+    document.getElementById('subscribeBtn').addEventListener('click', subscribeToPush);
+  </script>
+</body>
+</html>

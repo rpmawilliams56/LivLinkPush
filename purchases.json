@@ -1,20 +1,30 @@
-{
-  "TXN123456789": {
-    "payment_status": "Completed",
-    "payer_name": "John Doe",
-    "email": "john@example.com",
-    "amount": "9.99",
-    "currency": "USD",
-    "partner": "john",
-    "timestamp": "2025-08-28T15:22:11+00:00"
-  },
-  "TXN987654321": {
-    "payment_status": "Completed",
-    "payer_name": "Sara Smith",
-    "email": "sara@example.com",
-    "amount": "19.99",
-    "currency": "USD",
-    "partner": "sara",
-    "timestamp": "2025-08-28T15:30:45+00:00"
-  }
+// ... inside your VERIFIED IPN processing block
+
+// Load existing purchases or initialize empty array
+$jsonPath = __DIR__ . '/purchases.json';
+$purchases = file_exists($jsonPath) ? json_decode(file_get_contents($jsonPath), true) : [];
+
+// Check for duplicate txn_id
+if (isset($purchases[$txn_id])) {
+    header("HTTP/1.1 200 OK");
+    exit('Duplicate transaction ID detected. Already processed.');
 }
+
+// Validate partner key (your existing validation)
+
+// Save purchase with item_name included
+$purchases[$txn_id] = [
+    'payment_status' => $payment_status,
+    'payer_name'     => $payer_name,
+    'email'          => $payer_email,
+    'amount'         => $payment_amount,
+    'currency'       => $payment_currency,
+    'partner'        => $custom,
+    'item_name'      => $item_name,       // <--- ADD THIS LINE
+    'timestamp'      => date('c')
+];
+
+// Write back to JSON file
+file_put_contents($jsonPath, json_encode($purchases, JSON_PRETTY_PRINT));
+
+// Continue with rest of your IPN handling...

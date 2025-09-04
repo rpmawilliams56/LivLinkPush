@@ -10,7 +10,8 @@
     "dotenv": "^16.6.1",
     "ethers": "^5.7.0",
     "express": "^4.21.2",
-    "mongoose": "^8.18.0"
+    "mongoose": "^8.18.0",
+    "web-push": "^3.6.7"
   },
   "engines": {
     "node": "18.x"
@@ -26,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/rpmawilliams56/LLNK-Token-Sender/issues"
   },
-  "homepage": "https://github.com/rpmawilliams56/LLNK-Token-Sender#readme"
+  "homepage": "https://github.com/rpmawilliams56/LLNK-Token-Sender#readme",
+  "devDependencies": {
+    "hardhat": "^3.0.4"
+  }
 }
