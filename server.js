@@ -53,16 +53,13 @@ if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
 }
 
 // ===== MONGO CONNECTION =====
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('✅ Mongo connected');
-})
-.catch((err) => {
-  console.error('❌ Mongo connection error:', err);
-});
+mongoose.connect(MONGO_URI)
+  .then(() => {
+    console.log('✅ Mongo connected');
+  })
+  .catch((err) => {
+    console.error('❌ Mongo connection error:', err);
+  });
 
 // ===== SETUP WEB PUSH =====
 webpush.setVapidDetails(
