@@ -1,31 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Optin = require('../../models/optin');  // Make sure your schema matches these fields
-
-// POST /api/optin
-router.post('/', async (req, res) => {
-  try {
-    // Destructure all checkboxes (assuming form sends booleans)
-    const {
-      firstName,
-      lastName,
-      phoneOrSMS,
-      email,
-      optInAnytime,
-      optInShowOnly,
-      optInEmailOnly,
-      optOut,
-      bandInterestedInDemo,
-      businessInterestedInSponsorship
-    } = req.body;
-
-    // Basic validation
-    if (!firstName || !lastName || !phoneOrSMS || !email) {
-      return res.status(400).json({ error: 'Missing required fields.' });
-   const express = require('express');
-const router = express.Router();
 const Optin = require('../../models/optin');
 
+// POST /api/optin
 router.post('/', async (req, res) => {
   try {
     const {
@@ -56,7 +33,7 @@ router.post('/', async (req, res) => {
       optout_all: !!optout_all,
       band_demo_interest: !!band_demo_interest,
       business_partnership_interest: !!business_partnership_interest,
-      needs_review: true  // flag this for review per your previous request
+      needs_review: true // flag for review
     });
 
     await newOptin.save();
@@ -69,4 +46,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
