@@ -1,15 +1,23 @@
+// models/optin.js
+
 const mongoose = require('mongoose');
 
 const optinSchema = new mongoose.Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phoneOrSMS: { type: String, required: true },
-  email: { type: String, required: true },
+  firstname: String,
+  lastname: String,
+  phoneorsms: String,
+  email: String,
+  optin_sms_email_anytime: Boolean,
+  optin_sms_email_showonly: Boolean,
+  optin_email_only: Boolean,
+  optout_all: Boolean,
+  band_demo_interest: Boolean,
+  business_partnership_interest: Boolean,
+  needs_review: Boolean,
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-  optinSmsAndEmail: { type: Boolean, default: false },
-  optinLateNightNotifications: { type: Boolean, default: false },
-  optinEmailOnly: { type: Boolean, default: false },
-  bandInterestedInTestingLLNK: { type: Boolean, default: false }
-}, { timestamps: true });
-
-module.exports = mongoose.model('Optin', optinSchema);
+module.exports = mongoose.model('optin', optinSchema);
