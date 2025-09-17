@@ -1,5 +1,3 @@
-// models/optin.js
-
 const mongoose = require('mongoose');
 
 const optinSchema = new mongoose.Schema({
@@ -13,7 +11,10 @@ const optinSchema = new mongoose.Schema({
   optout_all: Boolean,
   band_demo_interest: Boolean,
   business_partnership_interest: Boolean,
-  needs_review: Boolean,
+  needs_review: {
+    type: Boolean,
+    default: false
+  },
   timestamp: {
     type: Date,
     default: Date.now

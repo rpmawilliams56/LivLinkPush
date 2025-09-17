@@ -22,20 +22,41 @@ router.post('/', async (req, res) => {
     // Basic validation
     if (!firstName || !lastName || !phoneOrSMS || !email) {
       return res.status(400).json({ error: 'Missing required fields.' });
+   const express = require('express');
+const router = express.Router();
+const Optin = require('../../models/optin');
+
+router.post('/', async (req, res) => {
+  try {
+    const {
+      firstname,
+      lastname,
+      phoneorsms,
+      email,
+      optin_sms_email_anytime,
+      optin_sms_email_showonly,
+      optin_email_only,
+      optout_all,
+      band_demo_interest,
+      business_partnership_interest
+    } = req.body;
+
+    if (!firstname || !lastname || !phoneorsms || !email) {
+      return res.status(400).json({ error: 'Missing required fields.' });
     }
 
-    // Create new document (all booleans forced to lowercase)
     const newOptin = new Optin({
-      firstName: firstName.toLowerCase(),
-      lastName: lastName.toLowerCase(),
-      phoneOrSMS: phoneOrSMS.toLowerCase(),
+      firstname: firstname.toLowerCase(),
+      lastname: lastname.toLowerCase(),
+      phoneorsms: phoneorsms.toLowerCase(),
       email: email.toLowerCase(),
-      optInAnytime: !!optInAnytime,
-      optInShowOnly: !!optInShowOnly,
-      optInEmailOnly: !!optInEmailOnly,
-      optOut: !!optOut,
-      bandInterestedInDemo: !!bandInterestedInDemo,
-      businessInterestedInSponsorship: !!businessInterestedInSponsorship
+      optin_sms_email_anytime: !!optin_sms_email_anytime,
+      optin_sms_email_showonly: !!optin_sms_email_showonly,
+      optin_email_only: !!optin_email_only,
+      optout_all: !!optout_all,
+      band_demo_interest: !!band_demo_interest,
+      business_partnership_interest: !!business_partnership_interest,
+      needs_review: true  // flag this for review per your previous request
     });
 
     await newOptin.save();
@@ -48,3 +69,4 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
